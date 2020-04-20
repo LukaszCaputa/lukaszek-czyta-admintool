@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Tags from '../views/Tags.vue'
 
 Vue.use(VueRouter)
 
@@ -12,6 +13,11 @@ export default new VueRouter({
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/tags',
+      name: 'tags',
+      component: Tags
     }
   ]
 })
