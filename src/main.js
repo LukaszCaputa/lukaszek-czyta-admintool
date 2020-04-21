@@ -21,5 +21,6 @@ new Vue({
   created () {
     console.log(this.$store)
     this.$store.dispatch('loadTagsAction') // dispatch loading
+    this.$store.dispatch('loadBooksAction')
   }
 }).$mount('#app')

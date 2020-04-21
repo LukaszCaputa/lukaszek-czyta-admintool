@@ -1,8 +1,7 @@
-// axios.get("http://localhost:5000/tag/get")
-// .then(response => {this.results = response.data.results})
 const tags = []
+const books = []
 const loading = true
 
 export default {
-  tags, loading
+  tags, books, loading
 }
