@@ -1,5 +1,23 @@
 <template>
 <div class="container">
+    <b-alert v-model="showInfoMessage" dismissible>
+      Update successful !
+    </b-alert>
+    <b-alert
+      :show="dismissCountDown"
+      dismissible
+      variant="danger"
+      @dismiss-count-down="countDownChanged"
+    >
+      <h4> {{ errorMessage }} </h4>
+      <p>This alert will dismiss after {{ dismissCountDown }} seconds...</p>
+      <b-progress
+        variant="error"
+        :max="10"
+        :value="dismissCountDown"
+        height="4px"
+      ></b-progress>
+    </b-alert>
     <b-form @submit="onSubmit">
       <b-form-group id="input-group-1" label="ID" label-for="input-1" label-cols="2">
         <b-form-input
@@ -109,7 +127,9 @@ export default {
       statusOptions: [
         { value: 1, text: 'Active' },
         { value: 9, text: 'Disabled' }
-      ]
+      ],
+      dismissCountDown: null,
+      showInfoMessage: false
     }
   },
   computed: {
@@ -120,13 +140,22 @@ export default {
   methods: {
     onSubmit (evt) {
       evt.preventDefault()
-      alert(JSON.stringify(this.form))
+      axios.put('http://localhost:5000/book/update/' + this.bookObject.id, this.bookObject, { crossdomain: true })
+        .then(response => {
+          this.showInfoMessage = true
+        })
+        .catch(error => {
+          this.errorMessage = error
+          this.dismissCountDown = 5
+        })
+    },
+    countDownChanged (dismissCountDown) {
+      this.dismissCountDown = dismissCountDown
     }
   },
   mounted () {
     var bookElem
     const bookIdParam = parseInt(this.$route.params.bookId)
-
     for (bookElem in this.books) {
       if (parseInt(this.books[bookElem].id) === bookIdParam) {
         this.bookObject = this.books[bookElem]
