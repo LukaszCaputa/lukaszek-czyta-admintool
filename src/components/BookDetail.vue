@@ -46,12 +46,7 @@
       </b-form-group>
 
       <b-form-group id="input-group-2" label="recommendation:" label-for="input-2" label-cols="2">
-        <b-form-input
-          id="input-2"
-          v-model="bookObject.recommendation"
-          required
-          placeholder="Enter recommendation"
-        ></b-form-input>
+        <b-form-select v-model="bookObject.recommendation" :options="recommendationOptions"></b-form-select>
       </b-form-group>
 
       <b-form-group id="input-group-2" label="read_date:" label-for="input-2" label-cols="2">
@@ -67,12 +62,7 @@
       </b-form-group>
 
       <b-form-group id="input-group-2" label="status:" label-for="input-2" label-cols="2">
-        <b-form-input
-          id="input-2"
-          v-model="bookObject.status"
-          required
-          placeholder="Enter status"
-        ></b-form-input>
+        <b-form-select v-model="bookObject.status" :options="statusOptions"></b-form-select>
       </b-form-group>
 
       <b-form-group id="input-group-2" label="image:" label-for="input-2" label-cols="2">
@@ -110,7 +100,16 @@ export default {
   name: 'BookDetails',
   data () {
     return {
-      bookObject: {}
+      bookObject: {},
+      recommendationOptions: [
+        { value: 1, text: 'Meh' },
+        { value: 2, text: 'Ok' },
+        { value: 3, text: 'Awesome' }
+      ],
+      statusOptions: [
+        { value: 1, text: 'Active' },
+        { value: 9, text: 'Disabled' }
+      ]
     }
   },
   computed: {
