@@ -37,7 +37,7 @@
       </b-form-group>
 
       <b-form-group label="Notes:" label-cols="2">
-        <b-form-textarea v-model="bookObject.notes" required placeholder="Enter notes"></b-form-textarea>
+        <b-form-textarea v-model="notesData" required placeholder="Enter notes"></b-form-textarea>
       </b-form-group>
 
       <b-form-group label="Recommendation:" label-cols="2">
@@ -45,15 +45,15 @@
       </b-form-group>
 
       <b-form-group label="Read date:" label-cols="2">
-        <b-form-datepicker v-model="bookObject.read_date" ></b-form-datepicker>
+        <b-form-datepicker v-model="readedDate" ></b-form-datepicker>
       </b-form-group>
 
       <b-form-group label="Created:" label-cols="2">
-        <b-form-datepicker v-model="bookObject.create_tstamp" readonly></b-form-datepicker>
+        <b-form-datepicker v-model="createTstamp" readonly></b-form-datepicker>
       </b-form-group>
 
       <b-form-group label="Updated:" label-cols="2">
-        <b-form-datepicker v-model="bookObject.update_tstamp" readonly></b-form-datepicker>
+        <b-form-datepicker v-model="updateTstamp" readonly></b-form-datepicker>
       </b-form-group>
 
       <b-form-group label="Status:" label-cols="2">
@@ -61,13 +61,13 @@
       </b-form-group>
 
       <b-form-group  label="Image:" label-cols="2">
-        <b-form-input v-model="bookObject.image" required placeholder="Enter image"></b-form-input>
+        <b-form-input v-model="imageData" required placeholder="Enter image"></b-form-input>
+        <b-img :src="this.imageData" fluid alt="no image ..."></b-img>
       </b-form-group>
 
       <b-form-group  label="Tags:"  label-cols="2">
         <b-form-tags input-id="tags-basic" v-model="currentTags" class="mb-2"></b-form-tags>
       </b-form-group>
-      {{ currentTags }}
       <b-button type="submit" variant="primary">Submit</b-button>
     </b-form>
     <b-row>
@@ -92,7 +92,12 @@ export default {
       currentTags: [],
       dismissCountDown: null,
       showInfoMessage: false,
-      errorMessage: null
+      errorMessage: null,
+      notesData: null,
+      imageData: null,
+      readedDate: null,
+      updateTstamp: null,
+      createTstamp: null
     }
   },
   computed: {
@@ -103,6 +108,9 @@ export default {
   methods: {
     onSubmit (evt) {
       evt.preventDefault()
+      this.bookObject.notes = Buffer.from(this.notesData)
+      this.bookObject.image = Buffer.from(this.imageData)
+      this.bookObject.read_date = this.readedDate
       this.$axios.put('http://localhost:5000/book/update/' + this.bookObject.id, this.bookObject, { crossdomain: true })
         .then(response => {
           this.showInfoMessage = true
@@ -119,7 +127,12 @@ export default {
   mounted () {
     const bookIdParam = parseInt(this.$route.params.bookId)
     this.bookObject = this.getBookById(bookIdParam)
-    this.bookObject.notes = '' // TODO
+    this.notesData = Buffer.from(this.bookObject.notes).toString('utf8')
+    this.imageData = Buffer.from(this.bookObject.image).toString('utf8')
+    this.readedDate = this.bookObject.read_date.substring(0, 10)
+    this.updateTstamp = this.bookObject.update_tstamp.substring(0, 10)
+    this.createTstamp = this.bookObject.create_tstamp.substring(0, 10)
+
     this.$axios.get('http://localhost:5000/tag2book/get/' + bookIdParam, { crossdomain: true })
       .then(response => {
         for (const tempTag in response.data) {
